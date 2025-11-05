@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         headers: { "X-Master-Key": JSONBIN_API_KEY },
       });
       const json = await response.json();
-      const categories = json.record.categories || [];
+      const categories = json.record || [];
       return res.status(200).json(categories);
     }
 
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         headers: { "X-Master-Key": JSONBIN_API_KEY },
       });
       const json = await response.json();
-      const categories = json.record.categories || [];
+      const categories = json.record || [];
 
       const newCategory = { id: Date.now().toString(), name };
       const updated = [...categories, newCategory];
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
           "Content-Type": "application/json",
           "X-Master-Key": JSONBIN_API_KEY,
         },
-        body: JSON.stringify({ categories: updated }),
+        body: JSON.stringify(updated),
       });
 
       return res.status(201).json(newCategory);
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
         headers: { "X-Master-Key": JSONBIN_API_KEY },
       });
       const json = await response.json();
-      const categories = json.record.categories || [];
+      const categories = json.record || [];
 
       const updated = categories.filter((cat) => cat.id !== id);
 
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
           "Content-Type": "application/json",
           "X-Master-Key": JSONBIN_API_KEY,
         },
-        body: JSON.stringify({ categories: updated }),
+        body: JSON.stringify(updated),
       });
 
       return res.status(200).json({ success: true });
