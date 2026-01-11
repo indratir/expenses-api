@@ -1,24 +1,16 @@
+import { BASE_URL, getHeaders } from "../utils/helpers";
+
+const ENDPOINT = `${BASE_URL}${process.env.PAYMENT_METHODS_BIN_ID}`;
+
+export async function getPaymentMethods() {
+  const response = await fetch(ENDPOINT, {
+    headers: getHeaders(),
+  });
+  const json = await response.json();
+  return json.info == "empty" ? [] : json;
+}
+
 export default async function handler(req, res) {
-  const PAYMENT_METHODS_BIN_ID = process.env.PAYMENT_METHODS_BIN_ID;
-  const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY;
-  const BASE_URL = `https://api.jsonbin.io/v3/b/${PAYMENT_METHODS_BIN_ID}`;
-
-  function getHeaders() {
-    return {
-      "Content-Type": "application/json",
-      "X-Master-Key": JSONBIN_API_KEY,
-      "X-Bin-Meta": false,
-    };
-  }
-
-  async function getPaymentMethods() {
-    const response = await fetch(BASE_URL, {
-      headers: getHeaders(),
-    });
-    const json = await response.json();
-    return json.info == "empty" ? [] : json;
-  }
-
   try {
     // 1️⃣ List all paymentMethods
     if (req.method === "GET") {
@@ -41,7 +33,7 @@ export default async function handler(req, res) {
       const updated = [...paymentMethods, newPaymentMethod];
 
       // Update bin
-      await fetch(BASE_URL, {
+      await fetch(ENDPOINT, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(updated),
@@ -62,7 +54,7 @@ export default async function handler(req, res) {
       const body = updated.length > 0 ? updated : { info: "empty" };
 
       // Update bin
-      await fetch(BASE_URL, {
+      await fetch(ENDPOINT, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(body),

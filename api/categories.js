@@ -1,24 +1,16 @@
+import { BASE_URL, getHeaders } from "../utils/helpers";
+
+const ENDPOINT = `${BASE_URL}${process.env.CATEGORIES_BIN_ID}`;
+
+export async function getCategories() {
+  const response = await fetch(ENDPOINT, {
+    headers: getHeaders(),
+  });
+  const json = await response.json();
+  return json.info == "empty" ? [] : json;
+}
+
 export default async function handler(req, res) {
-  const CATEGORIES_BIN_ID = process.env.CATEGORIES_BIN_ID;
-  const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY;
-  const BASE_URL = `https://api.jsonbin.io/v3/b/${CATEGORIES_BIN_ID}`;
-
-  function getHeaders() {
-    return {
-      "Content-Type": "application/json",
-      "X-Master-Key": JSONBIN_API_KEY,
-      "X-Bin-Meta": false,
-    };
-  }
-
-  async function getCategories() {
-    const response = await fetch(BASE_URL, {
-      headers: getHeaders(),
-    });
-    const json = await response.json();
-    return json.info == "empty" ? [] : json;
-  }
-
   try {
     // 1️⃣ List all categories
     if (req.method === "GET") {
@@ -38,7 +30,7 @@ export default async function handler(req, res) {
       const updated = [...categories, newCategory];
 
       // Update bin
-      await fetch(BASE_URL, {
+      await fetch(ENDPOINT, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(updated),
@@ -58,7 +50,7 @@ export default async function handler(req, res) {
       const body = updated.length > 0 ? updated : { info: "empty" };
 
       // Update bin
-      await fetch(BASE_URL, {
+      await fetch(ENDPOINT, {
         method: "PUT",
         headers: getHeaders(),
         body: JSON.stringify(body),
