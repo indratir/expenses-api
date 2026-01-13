@@ -20,15 +20,16 @@ export default async function handler(req, res) {
 
     // 2️⃣ Add new paymentMethod
     if (req.method === "POST") {
-      const { name } = await req.body;
-      if (!name)
+      const { name, hexColor } = await req.body;
+      if ((!name, !hexColor))
         return res.status(400).json({ error: "Missing payment method name" });
 
       // Fetch current data
       const paymentMethods = await getPaymentMethods();
       const newPaymentMethod = {
         id: name.replace(" ", "-").toLowerCase(),
-        name,
+        name: name,
+        hexColor: hexColor,
       };
       const updated = [...paymentMethods, newPaymentMethod];
 

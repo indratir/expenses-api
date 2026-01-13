@@ -20,13 +20,17 @@ export default async function handler(req, res) {
 
     // 2️⃣ Add new category
     if (req.method === "POST") {
-      const { name } = await req.body;
-      if (!name)
+      const { name, hexColor } = await req.body;
+      if ((!name, !hexColor))
         return res.status(400).json({ error: "Missing category name" });
 
       // Fetch current data
       const categories = await getCategories();
-      const newCategory = { id: name.replace(" ", "-").toLowerCase(), name };
+      const newCategory = {
+        id: name.replace(" ", "-").toLowerCase(),
+        name: name,
+        hexColor: hexColor,
+      };
       const updated = [...categories, newCategory];
 
       // Update bin
